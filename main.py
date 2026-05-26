@@ -102,14 +102,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         keyboard = []
 
-        for day in days:
-
+        for i, day in enumerate(days):
             keyboard.append([
-                InlineKeyboardButton(
+                 InlineKeyboardButton(
                     day,
-                    callback_data=f"day|{day}"
-                )
-            ])
+                    callback_data=f"day_{i}"
+                 )
+             ])
 
         keyboard.append([
             InlineKeyboardButton(
@@ -159,9 +158,11 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     # Выбор даты
-    elif query.data.startswith("day|"):
+    elif query.data.startswith("day_"):
 
-        selected_day = query.data.split("|")[1]
+        day_index = int(query.data.split("_")[1])
+
+        selected_day = days[day_index]
 
         if user_id not in user_data:
             user_data[user_id] = []
