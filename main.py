@@ -43,7 +43,7 @@ def get_next_days(days_count=14):
     return result
 
 
-days = get_next_days()
+DAYS = get_next_days()
 
 user_data = {}
 
@@ -132,7 +132,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         keyboard = []
 
-        for i, day in enumerate(days):
+        for i, day in enumerate(DAYS):
             keyboard.append([
                  InlineKeyboardButton(
                     day,
@@ -159,7 +159,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         keyboard = []
 
-        for i, day in enumerate(days):
+        for i, day in enumerate(DAYS):
 
             keyboard.append([
                 InlineKeyboardButton(
@@ -307,7 +307,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         day_index = int(query.data.split("_")[1])
 
-        selected_day = days[day_index]
+        selected_day = DAYS[day_index]
 
         if user_id not in user_data:
             user_data[user_id] = []
@@ -321,7 +321,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         is_edit = query.data.startswith("edit_")
 
-        for i, day in enumerate(days):
+        for i, day in enumerate(DAYS):
 
             if day in user_data[user_id]:
                 button_text = f"✅ {day}"
