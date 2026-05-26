@@ -70,6 +70,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.answer()
 
+    # Работает без выходных
     if query.data == "full_week":
 
         text = (
@@ -82,32 +83,40 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=ADMIN_ID,
             text=text
         )
+
         save_schedule(
             user_id,
             query.from_user.full_name,
-             "Работает без выходных"
+            "Работает без выходных"
         )
+
         await query.edit_message_text(
             "✅ График отправлен"
         )
 
+    # Выбор выходных
     elif query.data == "choose_days":
 
-        user_data[user_id] = []
+        if user_id not in user_data:
+            user_data[user_id] = []
 
         keyboard = []
 
         for day in days:
+
             keyboard.append([
                 InlineKeyboardButton(
-                day,
-                callback_data=f"day|{day}"
-            )
-         ])
+                    day,
+                    callback_data=f"day|{day}"
+                )
+            ])
 
-        keyboard.append(
-            [InlineKeyboardButton("📨 Отправить", callback_data="send_days")]
-        )
+        keyboard.append([
+            InlineKeyboardButton(
+                "📨 Отправить",
+                callback_data="send_days"
+            )
+        ])
 
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -116,6 +125,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=reply_markup
         )
 
+    # Отправка графика
     elif query.data == "send_days":
 
         selected_days = user_data.get(user_id, [])
@@ -142,27 +152,28 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text_days
         )
 
+        user_data[user_id] = []
+
         await query.edit_message_text(
             "✅ График отправлен"
         )
 
-    else:
+    # Выбор даты
+    elif query.data.startswith("day|"):
 
-       if query.data.startswith("day|"):
+        selected_day = query.data.split("|")[1]
 
-            selected_day = query.data.split("|")[1]
+        if user_id not in user_data:
+            user_data[user_id] = []
 
-            if user_id not in user_data:
-                user_data[user_id] = []
+        if selected_day not in user_data[user_id]:
+            user_data[user_id].append(selected_day)
 
-            if selected_day not in user_data[user_id]:
-                user_data[user_id].append(selected_day)
+        selected = ", ".join(user_data[user_id])
 
-            selected = ", ".join(user_data[user_id])
-
-            await query.answer(
-                text=f"Выбрано: {selected}"
-            )
+        await query.answer(
+            text=f"Выбрано: {selected}"
+        )
 create_db()
 app = ApplicationBuilder().token(TOKEN).build()
 
