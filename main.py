@@ -135,14 +135,17 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=ADMIN_ID,
             text=text
         )
+
         save_schedule(
-    user_id,
-    query.from_user.full_name,
-    text_days
-)
+            user_id,
+            query.from_user.full_name,
+            text_days
+        )
+
         await query.edit_message_text(
- "✅ График отправлен"
-)
+            "✅ График отправлен"
+        )
+
     else:
 
         if query.data.startswith("day_"):
