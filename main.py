@@ -167,13 +167,39 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if user_id not in user_data:
             user_data[user_id] = []
 
-        if selected_day not in user_data[user_id]:
+        # Добавляем или убираем день
+        if selected_day in user_data[user_id]:
+            user_data[user_id].remove(selected_day)
+        else:
             user_data[user_id].append(selected_day)
 
-        selected = ", ".join(user_data[user_id])
+        keyboard = []
 
-        await query.answer(
-            text=f"Выбрано: {selected}"
+        for i, day in enumerate(days):
+
+            if day in user_data[user_id]:
+                button_text = f"✅ {day}"
+            else:
+                button_text = day
+
+            keyboard.append([
+                InlineKeyboardButton(
+                    button_text,
+                    callback_data=f"day_{i}"
+                )
+            ])
+
+        keyboard.append([
+            InlineKeyboardButton(
+                "📨 Отправить",
+                callback_data="send_days"
+            )
+        ])
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await query.edit_message_reply_markup(
+            reply_markup=reply_markup
         )
 create_db()
 app = ApplicationBuilder().token(TOKEN).build()
