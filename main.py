@@ -210,8 +210,18 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         user_data[user_id] = []
 
+        back_keyboard = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton(
+                    "⬅️ Назад",
+                    callback_data="back_menu"
+                )
+            ]
+        ])
+
         await query.edit_message_text(
-            "✅ График отправлен"
+            "✅ График отправлен",
+            reply_markup=back_keyboard
         )
     elif query.data == "save_edit_days":
 
