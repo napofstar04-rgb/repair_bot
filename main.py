@@ -13,7 +13,37 @@ from database import create_db, save_schedule
 TOKEN = "8715635323:AAELRdsMlUXrbwfsrLOaWmyms7v9hqkOwUw"
 ADMIN_ID = 8626163973
 
-days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+from datetime import datetime, timedelta
+
+
+def get_next_days(days_count=14):
+
+    result = []
+
+    weekdays = {
+        0: "Пн",
+        1: "Вт",
+        2: "Ср",
+        3: "Чт",
+        4: "Пт",
+        5: "Сб",
+        6: "Вс"
+    }
+
+    today = datetime.now()
+
+    for i in range(days_count):
+
+        day = today + timedelta(days=i)
+
+        formatted = f"{weekdays[day.weekday()]} {day.strftime('%d.%m')}"
+
+        result.append(formatted)
+
+    return result
+
+
+days = get_next_days()
 
 user_data = {}
 
@@ -67,10 +97,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         keyboard = []
 
-        for day in days:
-            keyboard.append(
-                [InlineKeyboardButton(day, callback_data=day)]
-            )
+        for index, day in enumerate(days):
+            keyboard.append([
+                InlineKeyboardButton(
+                    day,
+                    callback_data=f"day_{index}"
+                 )
+             ])
 
         keyboard.append(
             [InlineKeyboardButton("📨 Отправить", callback_data="send_days")]
