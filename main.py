@@ -145,18 +145,23 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 )
     else:
 
-        day_index = int(query.data.split("_")[1])
+        if query.data.startswith("day_"):
 
-        selected_day = days[day_index]
+            day_index = int(query.data.split("_")[1])
 
-        if selected_day not in user_data[user_id]:
-            user_data[user_id].append(selected_day)
+            selected_day = days[day_index]
 
-        selected = ", ".join(user_data[user_id])
+            if user_id not in user_data:
+                user_data[user_id] = []
 
-        await query.answer(
-            text=f"Выбрано: {selected}"
-        )
+            if selected_day not in user_data[user_id]:
+                user_data[user_id].append(selected_day)
+
+            selected = ", ".join(user_data[user_id])
+
+            await query.answer(
+                text=f"Выбрано: {selected}"
+            )
 create_db()
 app = ApplicationBuilder().token(TOKEN).build()
 
