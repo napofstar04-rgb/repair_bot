@@ -145,8 +145,12 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 )
     else:
 
-        if query.data not in user_data[user_id]:
-            user_data[user_id].append(query.data)
+        day_index = int(query.data.split("_")[1])
+
+        selected_day = days[day_index]
+
+        if selected_day not in user_data[user_id]:
+            user_data[user_id].append(selected_day)
 
         selected = ", ".join(user_data[user_id])
 
