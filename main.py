@@ -51,9 +51,28 @@ user_data = {}
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
-        [InlineKeyboardButton("✅ Работаю без выходных", callback_data="full_week")],
-        [InlineKeyboardButton("📅 Выбрать выходные", callback_data="choose_days")]
+
+    [
+        InlineKeyboardButton(
+            "Работаю без выходных",
+            callback_data="full_week"
+        )
+    ],
+
+    [
+        InlineKeyboardButton(
+            "📅 Выбрать выходные",
+            callback_data="choose_days"
+        )
+    ],
+
+    [
+        InlineKeyboardButton(
+            "✏️ Изменить выходные",
+            callback_data="edit_days"
+        )
     ]
+]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -121,6 +140,34 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await query.edit_message_text(
             "Выберите выходные:",
+            reply_markup=reply_markup
+        )
+    elif query.data == "edit_days":
+
+        user_data[user_id] = []
+
+        keyboard = []
+
+        for i, day in enumerate(days):
+
+            keyboard.append([
+                InlineKeyboardButton(
+                    day,
+                    callback_data=f"day_{i}"
+                )
+            ])
+
+        keyboard.append([
+            InlineKeyboardButton(
+                "📨 Сохранить новый график",
+                callback_data="send_days"
+            )
+        ])
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await query.edit_message_text(
+            "Выберите новые выходные:",
             reply_markup=reply_markup
         )
 
