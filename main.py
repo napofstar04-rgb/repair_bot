@@ -83,13 +83,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=text
         )
         save_schedule(
-    user_id,
-    query.from_user.full_name,
-    "Работает без выходных"
-)
+            user_id,
+            query.from_user.full_name,
+             "Работает без выходных"
+        )
         await query.edit_message_text(
             "✅ График отправлен"
-)
+        )
 
     elif query.data == "choose_days":
 
