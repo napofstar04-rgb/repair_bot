@@ -119,7 +119,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ])
 
         await query.edit_message_text(
-            "✅ График отправлен",
+            f"✅ График отправлен\n\n"
+            f"Ваши выходные:\n{text_days}",
             reply_markup=back_keyboard
         )
 
@@ -220,7 +221,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ])
 
         await query.edit_message_text(
-            "✅ График отправлен",
+            f"✅ График отправлен\n\n"
+            f"Ваши выходные:\n{text_days}",
             reply_markup=back_keyboard
         )
     elif query.data == "save_edit_days":
@@ -261,7 +263,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ])
 
         await query.edit_message_text(
-            "✅ Новый график сохранён",
+            f"✅ Новый график сохранён\n\n"
+            f"Ваши выходные:\n{text_days}",
             reply_markup=back_keyboard
         )
     elif query.data == "back_menu":
