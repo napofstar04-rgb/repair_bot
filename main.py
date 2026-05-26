@@ -51,7 +51,7 @@ user_data = {}
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
-        [InlineKeyboardButton("✅ Работаю всю неделю", callback_data="full_week")],
+        [InlineKeyboardButton("✅ Работаю без выходных", callback_data="full_week")],
         [InlineKeyboardButton("📅 Выбрать выходные", callback_data="choose_days")]
     ]
 
@@ -75,7 +75,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = (
             f"📅 Новый график\n\n"
             f"👷 {query.from_user.full_name}\n"
-            f"Работает всю неделю ✅"
+            f"Работает без выходных ✅"
         )
 
         await context.bot.send_message(
@@ -85,7 +85,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         save_schedule(
     user_id,
     query.from_user.full_name,
-    "Работает всю неделю"
+    "Работает без выходных"
 )
         await query.edit_message_text(
             "✅ График отправлен"
