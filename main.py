@@ -109,8 +109,18 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Работает без выходных"
         )
 
+        back_keyboard = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton(
+                    "⬅️ Назад",
+                    callback_data="back_menu"
+                )
+            ]
+        ])
+
         await query.edit_message_text(
-            "✅ График отправлен"
+            "✅ График отправлен",
+            reply_markup=back_keyboard
         )
 
     # Выбор выходных
@@ -231,10 +241,51 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         user_data[user_id] = []
 
-        await query.edit_message_text(
-            "✅ Новый график сохранён"
-        )
+        back_keyboard = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton(
+                    "⬅️ Назад",
+                    callback_data="back_menu"
+                )
+            ]
+        ])
 
+        await query.edit_message_text(
+            "✅ Новый график сохранён",
+            reply_markup=back_keyboard
+        )
+    elif query.data == "back_menu":
+
+        keyboard = [
+
+            [
+                InlineKeyboardButton(
+                    "Работаю без выходных",
+                    callback_data="full_week"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "📅 Выбрать выходные",
+                    callback_data="choose_days"
+                )
+            ],
+
+            [
+                InlineKeyboardButton(
+                    "✏️ Изменить выходные",
+                    callback_data="edit_days"
+                )
+            ]
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await query.edit_message_text(
+            "Выберите вариант:",
+            reply_markup=reply_markup
+        )
     # Выбор даты
     elif (
         query.data.startswith("day_")
