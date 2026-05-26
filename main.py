@@ -153,14 +153,14 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             keyboard.append([
                 InlineKeyboardButton(
                     day,
-                    callback_data=f"day_{i}"
+                    callback_data=f"edit_{i}"
                 )
             ])
 
         keyboard.append([
             InlineKeyboardButton(
                 "📨 Сохранить новый график",
-                callback_data="send_days"
+                callback_data="save_edit_days"
             )
         ])
 
@@ -203,9 +203,43 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text(
             "✅ График отправлен"
         )
+    elif query.data == "save_edit_days":
+
+        selected_days = user_data.get(user_id, [])
+
+        if not selected_days:
+            text_days = "без выходных"
+        else:
+            text_days = ", ".join(selected_days)
+
+        text = (
+            f"✏️ График изменён\n\n"
+            f"👷 {query.from_user.full_name}\n"
+            f"Новые выходные: {text_days}"
+        )
+
+        await context.bot.send_message(
+            chat_id=ADMIN_ID,
+            text=text
+        )
+
+        save_schedule(
+            user_id,
+            query.from_user.full_name,
+            text_days
+        )
+
+        user_data[user_id] = []
+
+        await query.edit_message_text(
+            "✅ Новый график сохранён"
+        )
 
     # Выбор даты
-    elif query.data.startswith("day_"):
+    elif (
+        query.data.startswith("day_")
+        or query.data.startswith("edit_")
+    ):
 
         day_index = int(query.data.split("_")[1])
 
@@ -214,13 +248,14 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if user_id not in user_data:
             user_data[user_id] = []
 
-        # Добавляем или убираем день
         if selected_day in user_data[user_id]:
             user_data[user_id].remove(selected_day)
         else:
             user_data[user_id].append(selected_day)
 
         keyboard = []
+
+        is_edit = query.data.startswith("edit_")
 
         for i, day in enumerate(days):
 
@@ -229,17 +264,31 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 button_text = day
 
+            callback_prefix = "edit" if is_edit else "day"
+
             keyboard.append([
                 InlineKeyboardButton(
                     button_text,
-                    callback_data=f"day_{i}"
+                    callback_data=f"{callback_prefix}_{i}"
                 )
             ])
 
+        submit_callback = (
+            "save_edit_days"
+            if is_edit
+            else "send_days"
+        )
+
+        submit_text = (
+            "📨 Сохранить новый график"
+            if is_edit
+            else "📨 Отправить"
+        )
+
         keyboard.append([
             InlineKeyboardButton(
-                "📨 Отправить",
-                callback_data="send_days"
+                submit_text,
+                callback_data=submit_callback
             )
         ])
 
