@@ -370,76 +370,13 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_reply_markup(
             reply_markup=reply_markup
         )
-    async def send_reminders(app):
-
-    users = get_all_users()
-
-    keyboard = [
-
-        [
-            InlineKeyboardButton(
-                "Работаю без выходных",
-                callback_data="full_week"
-            )
-        ],
-
-        [
-            InlineKeyboardButton(
-                "📅 Выбрать выходные",
-                callback_data="choose_days"
-            )
-        ],
-
-        [
-            InlineKeyboardButton(
-                "✏️ Изменить выходные",
-                callback_data="edit_days"
-            )
-        ]
-    ]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    for user in users:
-
-        user_id = user[0]
-
-        try:
-
-            await app.bot.send_message(
-                chat_id=user_id,
-                text=(
-                    "📅 Пора обновить график!\n\n"
-                    "Выберите выходные на следующие 2 недели."
-                ),
-                reply_markup=reply_markup
-            )
-
-        except Exception as e:
-            print(f"Ошибка отправки {user_id}: {e}")
+    
 create_db()
 
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button))
-
-
-async def start_scheduler(app):
-
-    scheduler = AsyncIOScheduler()
-
-    scheduler.add_job(
-        send_reminders,
-        "interval",
-        minutes=1,
-        args=[app]
-    )
-
-    scheduler.start()
-
-
-app.post_init = start_scheduler
 
 print("Бот запущен...")
 
