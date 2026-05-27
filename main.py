@@ -128,8 +128,8 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ])
 
         await query.edit_message_text(
-            f"✅ График отправлен\n\n"
-            f"Ваши выходные:\n{text_days}",
+            "✅ График отправлен\n\n"
+            "Ваш график:\nРаботает без выходных ✅",
             reply_markup=back_keyboard
         )
 
