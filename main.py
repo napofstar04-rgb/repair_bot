@@ -418,20 +418,29 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             print(f"Ошибка отправки {user_id}: {e}")
 create_db()
+
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button))
-scheduler = AsyncIOScheduler()
 
-scheduler.add_job(
-    send_reminders,
-    "interval",
-    minutes=1,
-    args=[app]
-)
 
-scheduler.start()
+async def start_scheduler(app):
+
+    scheduler = AsyncIOScheduler()
+
+    scheduler.add_job(
+        send_reminders,
+        "interval",
+        minutes=1,
+        args=[app]
+    )
+
+    scheduler.start()
+
+
+app.post_init = start_scheduler
+
 print("Бот запущен...")
 
 app.run_polling()
