@@ -12,8 +12,6 @@ from telegram.ext import (
 from database import (
     create_db,
     save_schedule,
-    save_user,
-    get_all_users
 )
 TOKEN = "8715635323:AAELRdsMlUXrbwfsrLOaWmyms7v9hqkOwUw"
 ADMIN_ID = 8626163973
@@ -54,9 +52,6 @@ user_data = {}
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-
-    save_user(user_id)
 
     keyboard = [
 
