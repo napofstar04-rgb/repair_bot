@@ -15,7 +15,11 @@ def create_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
-    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -40,3 +44,29 @@ def save_schedule(user_id, full_name, days):
 
     conn.commit()
     conn.close()
+def save_user(user_id):
+
+    conn = sqlite3.connect("schedule.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO users (user_id)
+        VALUES (?)
+    """, (user_id,))
+
+    conn.commit()
+    conn.close()
+def get_all_users():
+
+    conn = sqlite3.connect("schedule.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT user_id FROM users
+    """)
+
+    users = cursor.fetchall()
+
+    conn.close()
+
+    return users
