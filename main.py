@@ -9,7 +9,6 @@ from telegram.ext import (
     CallbackQueryHandler,
     ContextTypes
 )
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from database import (
     create_db,
     save_schedule,
