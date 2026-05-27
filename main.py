@@ -427,7 +427,7 @@ scheduler = AsyncIOScheduler()
 scheduler.add_job(
     send_reminders,
     "interval",
-    days=14,
+    minutes=1,
     args=[app]
 )
 
