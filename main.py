@@ -9,7 +9,13 @@ from telegram.ext import (
     CallbackQueryHandler,
     ContextTypes
 )
-from database import create_db, save_schedule
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from database import (
+    create_db,
+    save_schedule,
+    save_user,
+    get_all_users
+)
 TOKEN = "8715635323:AAELRdsMlUXrbwfsrLOaWmyms7v9hqkOwUw"
 ADMIN_ID = 8626163973
 
@@ -49,6 +55,9 @@ user_data = {}
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+
+    save_user(user_id)
 
     keyboard = [
 
@@ -361,12 +370,68 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_reply_markup(
             reply_markup=reply_markup
         )
+    async def send_reminders(app):
+
+    users = get_all_users()
+
+    keyboard = [
+
+        [
+            InlineKeyboardButton(
+                "Работаю без выходных",
+                callback_data="full_week"
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "📅 Выбрать выходные",
+                callback_data="choose_days"
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "✏️ Изменить выходные",
+                callback_data="edit_days"
+            )
+        ]
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    for user in users:
+
+        user_id = user[0]
+
+        try:
+
+            await app.bot.send_message(
+                chat_id=user_id,
+                text=(
+                    "📅 Пора обновить график!\n\n"
+                    "Выберите выходные на следующие 2 недели."
+                ),
+                reply_markup=reply_markup
+            )
+
+        except Exception as e:
+            print(f"Ошибка отправки {user_id}: {e}")
 create_db()
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button))
+scheduler = AsyncIOScheduler()
 
+scheduler.add_job(
+    send_reminders,
+    "interval",
+    days=14,
+    args=[app]
+)
+
+scheduler.start()
 print("Бот запущен...")
 
 app.run_polling()
